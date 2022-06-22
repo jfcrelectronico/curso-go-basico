@@ -41,6 +41,14 @@ func ejemploContinue(){
 		fmt.Printf("iteracion %d:\n",x+2)
 	}
 }
+//    nombre_de_objeto_creado tipo_estructura_objeto_creado  nombre_deseado_funcion_objeto_creado
+func (carro2 carro) miCarroFuncion(){
+	fmt.Println(carro2.marca," mensaje funcion")
+}
+// nombre_de_objeto_creado apuntador_valores_objeto_creado_por_tipo  nombre_deseado_funcion_apuntador
+func (carro2 *carro) apuntadorFuncion(){
+	carro2.marca+="2"
+}
 func main (){
 
 	
@@ -186,20 +194,36 @@ func main (){
 	micarro:=carro{marca:"mazda",modelo:2022}
 	fmt.Println(micarro)	
 
-	//declarar o instanciar una variable del tipo struct
-	var carro2 carro
-	carro2.marca="ferrari"
-
-	fmt.Println(carro2)
+	
 
 	//declara una instancia desde el paquete misPaquetes para ello se debe correr en la terminar el comando go mod init
 	//motosf:=misPaquetes.MotosPublic{Cilindraje:"1500",Pais:"Chile"}
 	motosf:=pk.MotosPublic{Cilindraje:"1500",Pais:"Chile"}//se crea el objeto del tipo struct del paquete misPaquetes usando el alias pk
 	fmt.Println(motosf)
 
+	//punteros -> permiten acceder a una direccion de memoria especifica
+	// para golang se usa el & para indicar posicion de memoria y * para indicar la lectura del valor en la posicion de memoria deseada
 
+	a1 :=20
+	b1 := &a1
 
+	fmt.Println(a1)//valor de la varible a1
+	fmt.Println(b1)//posicion en memoria de la variable a1 se almacena en la variable b1
+	fmt.Println(*b1)//valor almacenado en la posicion de memoria a1 asignado a la variable b1
+	*b1=80//al modificar el valor asignado a la variable b1 que esta apuntando a la direccion de memoria de la variable a1
+	      //se cambiara el valor de la variable a1
+	fmt.Println(a1)
 
+	//declarar o instanciar una variable del tipo struct
+	var carro2 carro
+	carro2.marca="ferrari"
+	fmt.Println(carro2)
 
-
+	carro2.miCarroFuncion()//se crea una funcion para el objeto carro 2
+	fmt.Println(carro2)
+	carro2.apuntadorFuncion()
+	fmt.Println(carro2)
+	carro2.apuntadorFuncion()
+	fmt.Println(carro2)
+	carro2.apuntadorFuncion()
 }

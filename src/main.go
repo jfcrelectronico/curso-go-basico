@@ -3,8 +3,20 @@ package main
 import (
 	"fmt"
 	"log"
+	pk "primerProyecto/src/misPaquetes" //pk es el alias para la ruta del paquete misPaquetes
 	"strconv"
+	"strings"
 )
+
+//structs son plantillas que permiten la creacion de un objeto similar a como trabaja un clase
+
+//type-> tipo de dato
+//carro-> nombre para la estructura
+//struct-> indica a go que se va a desarrollar un estructura
+type carro struct{
+	marca string
+	modelo int
+}
 
 func funcionUno(a,b int,mensaje string){//los parametros a y b son del tipo int mensaje es del tipo int
 	fmt.Printf("el mensaje recibido fue: %s\n%d\n%d\n",mensaje,a,b)
@@ -16,7 +28,24 @@ func retonarValor(a,b int) int{//la funcion recibe 2 parametros y retona un resu
 func dobleRetorno(c,d int)(h,g int){//se reciben 2 enteros y se regresan 2 enteros
 	return c*3,d*5
 }
+
+func ejemploContinue(){
+	for x:=0;x<5;x++{
+		if x==3{
+			fmt.Println("Valor x=3")
+			continue//al encontrar la palabra reservada continue se finaliza la iteracion y las demas lineas de codigo
+					//que esten luego de esta NO seran ejecutadas
+		}
+		fmt.Printf("iteracion %d:\n",x)
+		fmt.Printf("iteracion %d:\n",x+1)
+		fmt.Printf("iteracion %d:\n",x+2)
+	}
+}
 func main (){
+
+	
+	defer fmt.Println("finaliza programa")//la palabra reservada defer indica que esta linea de codigo sera
+										  //la ultima que se ejecute antes de cerrar finalizar la funcion
 	//declaracion de constantes
 	const nombre float64 = 3.14	
 	const nombre2 =3.1416
@@ -92,11 +121,85 @@ func main (){
 	modulo:=5%2
 	switch {
 	//las estructuras superiores son iguales	
-	case modulo==0:
+	case modulo==0://establece la codicion en el case
 		fmt.Println("numero es par")
 	break
 	default:
 		fmt.Println("numero es impar")
 	break
 	}
+
+	ejemploContinue()
+
+	array:= [5] int{3,4,5,6,7}// array se indica la cantidad de elementos que va a tener
+							  //los arrays son INMUTABLES luego de ser declarados no pueden ser cambiados
+	//array[0]=1
+	//array[1]=2
+	fmt.Println(array,' ',array[1])
+	fmt.Println(len(array),cap(array))//para los arreglos len y cap dan como resultado el mismo valor
+
+	slice := []int{1,2,3,4,5}//es un arreglo de elementos donde no se define su capacidad maxima desde la declaracion
+	fmt.Println(slice[1:])	
+	fmt.Println(slice[:3])
+	fmt.Println(slice[:])
+	fmt.Println(slice[1:4])
+	slice = append(slice, 8)
+	fmt.Println(slice)
+	lista:=[]int{1,2,3,5}
+	slice = append(slice,lista...)//para agregar una serie de elementos a un slice se deben almacenar en otra variable 
+								 //y luego con la estructura append hacer mension a dicha variable, go de forma automatica
+								//agregara los ...
+	fmt.Println(slice)
+
+	for pos,item := range slice{//recorre item por item un arreglo de elementos, donde se captura la posicion y el valor almacenado en la misma
+								//si no se desea capturar la posicion se usa el metodo de escape _
+		fmt.Println(pos,item)
+	}
+
+	var texto string="jony"
+	var texto2 string="FREdy"
+	fmt.Println(texto[0])//retorna el valor ascii de la letra del string texto en la posicion 0
+	fmt.Println(string(texto[0]))//retorna el simbolo del valor ascii en la posiicon cero del string
+	fmt.Println(strings.ToLower(texto2))//convierte todos los caracteres de un string en minusculas
+
+	//map son iguales a los diccionarios
+	diccionarios:=make(map[string]string)//estructura llave valor usando la palabra reservada map
+
+	diccionarios["jony"]="carmona"
+	diccionarios["natalia"]="gomez"
+
+	fmt.Println(diccionarios)
+
+	for nombre,apellido:=range diccionarios{//recorre cada una de las combinaciones llave valor del diccionario
+		fmt.Println(nombre,apellido)
+	}
+
+	fmt.Println(diccionarios["jony"])//imprime el valor de la llave jony
+
+	llave,ok:=diccionarios["natalia"]//determinar si una llave existe de ser verdadero se carga en la variable ok ->true
+	fmt.Println(llave,ok)
+
+	llaves,ok:=diccionarios["fredy"]//determinar si una llave existe de ser verdadero se carga en la variable ok ->false
+	fmt.Println(llaves,ok)
+
+	//declarar o instanciar una variable del tipo struct
+	micarro:=carro{marca:"mazda",modelo:2022}
+	fmt.Println(micarro)	
+
+	//declarar o instanciar una variable del tipo struct
+	var carro2 carro
+	carro2.marca="ferrari"
+
+	fmt.Println(carro2)
+
+	//declara una instancia desde el paquete misPaquetes para ello se debe correr en la terminar el comando go mod init
+	//motosf:=misPaquetes.MotosPublic{Cilindraje:"1500",Pais:"Chile"}
+	motosf:=pk.MotosPublic{Cilindraje:"1500",Pais:"Chile"}//se crea el objeto del tipo struct del paquete misPaquetes usando el alias pk
+	fmt.Println(motosf)
+
+
+
+
+
+
 }

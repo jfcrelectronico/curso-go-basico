@@ -2,10 +2,12 @@ package main
 
 import (
 	"fmt"
-	"log"
-	pk "primerProyecto/src/misPaquetes" //pk es el alias para la ruta del paquete misPaquetes
-	"strconv"
-	"strings"
+	"sync"
+	"time"
+	//"log"
+	//pk "primerProyecto/src/misPaquetes" //pk es el alias para la ruta del paquete misPaquetes
+	//"strconv"
+	//"strings"
 )
 
 //structs son plantillas que permiten la creacion de un objeto similar a como trabaja un clase
@@ -49,9 +51,59 @@ func (carro2 carro) miCarroFuncion(){
 func (carro2 *carro) apuntadorFuncion(){
 	carro2.marca+="2"
 }
+
+//redefine el metodo str que retorna el objeto carro2, permitiendo hacer mas legible la informacion
+func (carro2 carro) String() string {
+	return fmt.Sprintf("Marca del carro: %s,y modelo: %d",carro2.marca,carro2.modelo)
+
+}
+
+
+type cuadrado struct{
+	lado float64
+}
+type rectangulo struct{
+	base float64
+	altura float64
+}
+type calcular interface{
+	area() float64
+}
+func (c cuadrado) area() float64{//funcion para calcular el area del cuadrado
+	return c.lado*c.lado
+}
+func (r rectangulo) area() float64{//funcion para calcular el area del rectangulo
+	return r.base*r.altura
+}
+// los dos metodos anteriores se denominan area pero cada uno esta aplicado a un figura diferente pero permite, usar
+//una unica interface para su llamado, dicha interface se denomino calcular y tiene como unico parametro area(), que 
+//es una funcion comun entre las dos figuras
+func calcularArea (f calcular){//la funcion se define con una interface denominada calcular 
+	fmt.Println("Area: ",f.area())
+}
+
+
+
+
+
+/*
 func main (){
 
+	//lista de interfaces
+	//permite asignarle a una lista diferentes tipos de elementos como lo hace python
+	multi_Variables:=[]interface{}{"jony",10,5.0,true,10+5i}
+	fmt.Printf("%v,\n tipo 1: %T\n tipo 2: %T\n tipo 3: %T\n tipo 4: %T\n tipo 5: %T",
+	multi_Variables,multi_Variables[0],multi_Variables[1],multi_Variables[2],multi_Variables[3],multi_Variables[4])
+
+
+	cuadro:=cuadrado{lado:5}//instanciar un objeto del tipo cuadrado
+	rect:=rectangulo{base:6,altura:7}//instanciar un objeto del tipo rectangulo
+
+	calcularArea(cuadro)//llama a la funcion calcularArea que recibe el objeto que cuenta con un metodo area
+	calcularArea(rect)
+
 	
+	/*
 	defer fmt.Println("finaliza programa")//la palabra reservada defer indica que esta linea de codigo sera
 										  //la ultima que se ejecute antes de cerrar finalizar la funcion
 	//declaracion de constantes
@@ -90,13 +142,14 @@ func main (){
 		fmt.Println(conteo)
 		conteo++
 	}
+	*/
 	//conteo infinito si no se tiene un condicional en el for continuara la ejecucion del codigo de forma infinita
 	/*infinito:=0
 	for{
 		fmt.Printf("mensaje %d",infinito)
 		infinito++
 	}*/
-
+		/*
 	if conteo==10{
 		fmt.Println("valor igual a 10")
 	}else{
@@ -226,4 +279,38 @@ func main (){
 	carro2.apuntadorFuncion()
 	fmt.Println(carro2)
 	carro2.apuntadorFuncion()
+	fmt.Println(carro2)
+	
+}*/
+
+//goroutines
+//permite la creacion de sistemas con multiples hilos que se ejecutaran de manera concurrente en el codigo haciendo el mismo mas eficiente
+
+func mensaje (texto string,wg *sync.WaitGroup){//
+	defer wg.Done()// indica que la subrutina finalizo
+	time.Sleep(time.Second*4)
+	fmt.Println(texto)	
+}
+func contador2 (conteos int,wg *sync.WaitGroup){//
+	defer wg.Done()// indica que la subrutina finalizo
+	for i:=0;i<conteos;i++{
+		fmt.Println("conteo: ",i)
+		time.Sleep(time.Second*1)
+	}	
+}
+//la funcion main esta corriendo dentro de una goroutine que una 
+//vez termina la misma muere
+func main(){
+	//time.Sleep(time.Second*1) //retardo de 1 segundo
+
+	var wg sync.WaitGroup //acumula un conjunto de gotoutines para ser liberados poco a poco
+	fmt.Println("Mensaje dentro de la funcion main")
+	wg.Add(2)//agregar una subrutina al waitgroup, que espera que se ejecute la subrutina antes que la subrutina main muera 
+	go mensaje("Mensaje desde subrutina",&wg)//la palabra resevada go genera que esta linea de codigo se ejecute de forma
+											 //concurrente con la funcion main en este caso	
+	go contador2(3,&wg)
+	go func(text string){
+		fmt.Println(text)
+	}("mensaje desde funcion anonima")	
+	wg.Wait()//se le indica a la goroutine del main que espere hasta que las subrutinas del waitgroup acaben	
 }

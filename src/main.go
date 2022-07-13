@@ -2,8 +2,11 @@ package main
 
 import (
 	"fmt"
-	"sync"
-	"time"
+	_"net/http"
+
+	_"github.com/labstack/echo"
+	//"sync"
+	//"time"
 	//"log"
 	//pk "primerProyecto/src/misPaquetes" //pk es el alias para la ruta del paquete misPaquetes
 	//"strconv"
@@ -285,7 +288,7 @@ func main (){
 
 //goroutines
 //permite la creacion de sistemas con multiples hilos que se ejecutaran de manera concurrente en el codigo haciendo el mismo mas eficiente
-
+/*
 func mensaje (texto string,wg *sync.WaitGroup){//
 	defer wg.Done()// indica que la subrutina finalizo
 	time.Sleep(time.Second*4)
@@ -313,4 +316,80 @@ func main(){
 		fmt.Println(text)
 	}("mensaje desde funcion anonima")	
 	wg.Wait()//se le indica a la goroutine del main que espere hasta que las subrutinas del waitgroup acaben	
+}
+*/
+     //recibe un texto del tipo string, se agrega el canal;chan<- el canal SOLO sera de entrada de datos 
+	 //<-chan canal solo sera de SALIDA de datos
+/*
+func decir (text string,canal chan<- string){
+	canal <-text//al canal le ingreso el texto que recibe la funcion
+	//text=<-canal//asignele a text lo que esta en canal
+}
+
+func main(){
+	    //construir un canal que recibe string, recibe una goroutine a la vez si no se especifica lo toma de forma aleatoria
+	canal :=make(chan string,1)
+	fmt.Println("hello")
+	go decir("bye",canal)// se invoca la funcion decir como una goroutine
+	fmt.Println(<-canal)//<- permite tomar el dato asignado al canal
+
+}*/
+
+/*
+func mensaje(text string,canal chan string){
+	canal<-text
+}
+func main(){
+	canal := make(chan string,2)
+	canal<-"Mensaje 1"
+	canal<-"Mensaje 2"
+		       //len cuantas goroutines estan dentro del canal,cap cantidad maxima que puede almacenar ese canal 
+	fmt.Println(len(canal),cap(canal))
+	//close: cierra el canal para evitar el ingreso de datos 
+	close(canal) //lo ideal es que el canal sea cerrado si se sabe que no se van a ingresar mas datos
+
+	for mensaje := range canal{//iterar en todas las gororutine del canal
+		fmt.Println(mensaje)
+	}
+
+	//si se tienen multiples canales es recomendable usar select,pues no se puede determinar que canal respondera primero
+	email:=make(chan string)//canal email
+	email2:=make(chan string)//canal email 2
+	email3:=make(chan string)//canal email 2
+
+	//NOTA: los canales responden de formas aleatorias es por ello que se usa select para la impresion de salida de los mismos
+	go mensaje("mensaje2",email2)
+	go mensaje("mensaje1",email)
+	go mensaje("mensaje3",email3)
+	
+	
+	for i:=0; i<3;i++{//hasta 3 0,1,2 porque se tiene 3 canales este valor dependera de la cantidad de canales que se requieran
+		select{
+		case m1:=<-email://la variable m1 guardara la salida del canal email
+			fmt.Println("Email recibido de email",m1)
+		case m2:=<-email2://la variable m1 guardara la salida del canal email2
+			fmt.Println("Email recibido de email2",m2)
+		case m3:=<-email3://la variable m1 guardara la salida del canal email3
+			fmt.Println("Email recibido de email3",m3)
+
+		}
+	}
+
+}*/
+/*
+func main(){
+	e:=echo.New()
+
+	e.GET("/",func(c echo.Context) error{
+		return c.String(http.StatusOK,"Hello World")
+	})
+	e.Logger.Fatal(e.Start(":1323"))
+}*/
+
+func holamundo(){
+	fmt.println("2")
+}
+
+func main(){
+	holamundo()
 }
